@@ -1,0 +1,25 @@
+services:
+  wikivault:
+    build: .
+    container_name: wikivault
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      WIKIVAULT_DATA_DIR: /app/data
+    volumes:
+      - wikivault_data:/app/data
+      - wikivault_uploads:/app/public/uploads
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  wikivault_data:
+  wikivault_uploads:
